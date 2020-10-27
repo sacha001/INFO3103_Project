@@ -1,0 +1,30 @@
+#0
+# Make sure your database is clean
+
+#1
+# Sign in without being signed up
+# Should return "no user account" status
+# Make sure you are using the correct port in the signinClient and signupClient files!
+
+run the signinClient script
+
+
+#2
+# Sign up your user
+# Should return "success" status
+
+run the signupClient script
+
+
+#3
+# Sign in with your user
+# Should return "success" status
+
+run the signinClient script
+
+
+#4
+# Sign out
+# Should return "success" status
+
+curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/signin

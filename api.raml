@@ -1,0 +1,174 @@
+#%RAML 1.0
+title: RideShare API
+version: v1
+baseUri: http://api.samplehost.com
+types:
+  URI: string
+  ride:
+    type: object
+    properties:
+      id: number
+      usernName: string
+      availSeats: number
+      startLocation: string
+      endLocation: string
+      departTime: string
+      wantedFlag: number #0 or 1 for wanted or available
+  user:
+    type: object
+    properties:
+      username: string
+      name: string
+mediaType: application/json
+
+/signin:
+  post:
+    description: |
+      Logs a user in
+    responses:
+      201:
+      400:
+  delete:
+    description: |
+      Logs a user out
+    responses:
+      200:
+      403:
+
+/signup:
+  post:
+    description: |
+      creates a user account and logs them in
+    responses:
+      200:
+      400:
+
+/users:
+  get:
+    description: |
+      Gets a list of all users
+    responses:
+      200:
+        body:
+          type: user[]
+      403: #if user is not logged in
+  /{userId}:
+    get:
+      description: |
+        Gets a user
+      responses:
+        200:
+          body:
+            type: user
+        403:
+        404:
+    delete:
+      description: |
+        Deletes a user profile
+      responses:
+        200:
+        403:
+
+/rides:
+  get:
+    description: |
+      Lists all rides matching query criteria
+    responses:
+      200:
+        body:
+          type: ride[]
+      403:
+  /wanted:
+    description: |
+      Lists all of the rides offered
+    responses:
+      200:
+        body:
+          type: ride[]
+      403:
+  /available:
+    description: |
+      Lists all of the rides available
+    responses:
+      200:
+        body:
+          type: ride[]
+      403:
+  /{userId}:
+    get:
+      description: |
+        Lists all rides created by the user and matching the query criteria
+      responses:
+        200:
+          body:
+            type: ride[]
+        404:
+        403:
+    post:
+      description: |
+        Creates a new ride
+      body:
+        type: ride
+      responses:
+        201:
+        403:
+    /{rideId}:
+      get:
+        description: |
+          Gets the ride by ID
+        responses:
+          200:
+            body:
+              type: ride
+          403:
+          404:
+      put:
+        description: |
+          Updates the ride (can only be done by the creator)
+        body:
+          application/json:
+        responses:
+          200:
+          404:
+          403:
+      delete:
+        description: |
+          Deletes the ride (can only be done by the creator)
+        responses:
+          200:
+          404:
+          403:
+      /passengers:
+        get:
+          description:
+            Gets the passengers for the ride
+          responses:
+            200:
+              body:
+                type: user[]
+            404:
+            403:
+        post:
+          description:
+            a user adds themself as a passenger to the ride
+          responses:
+            201:
+            403:
+            404:
+        /{userId}:
+          get:
+            description: |
+              Gets the specific passenger on the ride by ID
+            responses:
+              200:
+                body:
+                  type: user
+              404:
+              403:
+          delete:
+            description: |
+              Removes passenger from ride (can be done by ride creator or passenger)
+            responses:
+              200:
+              404:
+              403:

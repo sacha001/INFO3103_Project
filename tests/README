@@ -1,0 +1,6 @@
+Please do the tests in this order:
+
+-signin_signup
+-rides
+-passengers
+-users

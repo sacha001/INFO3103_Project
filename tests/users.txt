@@ -1,0 +1,25 @@
+#1
+# Populate the database with some users
+
+run the populateUsers.sql script
+
+
+#2
+# Get all users
+# Should return all users in database
+
+curl -X GET -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/users
+
+
+#3
+# Get a specific user
+# Should return 1 user
+
+curl -X GET -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/users/arnold56
+
+
+#4
+# Delete your user
+# You should not be able to sign in after this, verify by running signinClient
+
+curl -X DELETE -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/users/<your username>

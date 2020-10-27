@@ -1,0 +1,30 @@
+#1
+
+Do these tests AFTER doing the "rides" tests
+
+
+#1
+# Add yourself to a ride (in this case, zsmith1's ride id=2)
+
+curl -H "Content-Type: application/json" -X POST -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides/zsmith1/2/passengers
+
+
+#2
+# Get the passengers for this ride
+# There should only be the one you just added
+
+curl -X GET -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides/zsmith1/2/passengers
+
+
+#3
+# Get your passenger for this ride
+# This should also just return your user but not as an array this time
+
+curl -X GET -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides/zsmith1/2/passengers/<your username>
+
+
+#4
+# Delete your passenger from this ride
+# This should remove your passenger from the ride, you can run the previous command to make sure it worked
+
+curl -X DELETE -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides/zsmith1/2/passengers/<your username>

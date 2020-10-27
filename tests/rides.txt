@@ -1,0 +1,73 @@
+#1
+# Populate the database with some rides
+
+run populateRides.sql
+
+
+#1.1
+# Log in
+
+run the signinClient script
+
+
+#2
+# Get all rides
+# Should return all rides, there will be 5
+
+curl -H "Content-Type: application/json" -X GET -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides
+
+
+#2.2
+# Get all wanted rides
+# This should return 2 rides
+
+curl -H "Content-Type: application/json" -X GET -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides/wanted
+
+
+#2.3
+# Get all available rides
+# This should return 3 rides
+
+curl -H "Content-Type: application/json" -X GET -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides/available
+
+
+#3
+# Create a ride for another user
+# Should return "permission denied"
+
+curl -i -X POST -H "Content-Type: application/json" -b cookie-jar -d '{"StartLocation": "California", "DepartureTime": "Midnight", "Destination":"Moncton", "Seats": 3, "Flag": 0}' -k https://info3103.cs.unb.ca:<your port>/rides/arnold56
+
+
+#4
+# Create TWO rides for your user (run this command TWICE)
+# Should create the rides successfully (ride id 6 and 7 in this case)
+
+curl -i -X POST -H "Content-Type: application/json" -b cookie-jar -d '{"StartLocation": "California", "DepartureTime": "Midnight", "Destination":"Moncton", "Seats": 3, "Flag": 0}' -k https://info3103.cs.unb.ca:<your port>/rides/<your username>
+
+
+#5
+# Get the rides for your user
+# Should return the 2 rides you created
+
+curl -H "Content-Type: application/json" -X GET -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides/<your username>
+
+
+#6
+# Get a single ride for your user using the id (id=6 in this case)
+# Should return 1 ride
+
+curl -H "Content-Type: application/json" -X GET -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides/<your username>/6
+
+
+#7
+# Update a ride for your user using the id (id=6 in this case)
+# The ride should be updated (Run the previous command to verify)
+
+curl -H "Content-Type: application/json" -X PUT -b cookie-jar -d '{"StartLocation": "Freddy"}' -k https://info3103.cs.unb.ca:<your port>/rides/<your username>/6
+
+
+#8
+# Delete the ride using the id (id=6 in this case)
+# The ride should be successfully deleted
+
+curl -H "Content-Type: application/json" -X DELETE -b cookie-jar -k https://info3103.cs.unb.ca:<your port>/rides/<your username>/6

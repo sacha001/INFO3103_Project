@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+  <title>Ride Share</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+  <div id="app" class="container">
+    <div class = "container">
+      <nav class="navbar navbar-expand-md navbar-light bg-light" id="top-bar">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">Ride Share</a>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+              <a class="nav-item nav-link" href="#" data-toggle="modal" data-target="#exampleModalCenter">Create Ride</a>
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Create Ride</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <label for="destinationInput">Destination</label>
+                        <input type="text" class="form-control" id="destinationInput" placeholder="Enter destination">
+                      </div>
+                      <div class="form-group">
+                        <label for="startInput">Start</label>
+                        <input type="text" class="form-control" id="startInput" placeholder="Enter start">
+                      </div>
+                      <div class="form-group">
+                        <label for="timeInput">Time</label>
+                        <input type="text" class="form-control" id="timeInput" placeholder="Enter time">
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button v-on:click="createRide($('#destinationInput').val(),$('#startInput').val(), $('#timeInput').val())" data-dismiss="modal" type="button" class="btn btn-primary">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div>
+          <a> Logged in as <u>{{user}}</u>&nbsp;&nbsp;</a>
+          <button v-on:click="logout()" type="button" class="btn btn-primary">Sign out</button>
+        </div>
+    </nav>
+    <div class="jumbotron" id="jumbo">
+      <h1 class="display-4">Welcome to our Ride Share service!</h1>
+      <p class="lead">To view rides please create an account or sign in.</p>
+      <hr class="my-4">
+      <div class="input-group mb-3" id="LoginField">
+        <input type="text" class="form-control" placeholder="Username" aria-label="Username" id="username">
+        <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="button-addon2" id="password">
+        <div class="input-group-append">
+          <button class="btn btn-primary" v-on:click = "login()" type="button" id="button-addon2">Sign-In</button>
+        </div>
+      </div>
+      <div id="dontHave">
+        <a v-on:click="signUpForm()">Don't have an account?</a>
+      </div>
+      <form id=signForm>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Username</label>
+          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter username">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="signupPassword" placeholder="Password">
+          <label for="exampleInputPassword1">Name</label>
+          <input type="text" class="form-control" id="signupPassword" placeholder="Name">
+        </div>
+        <button type="submit" class="btn btn-primary">Sign up</button>
+        <button class="btn btn-primary" v-on:click = "cancel()" type="button" id="button-addon2">Cancel</button>
+      </form>
+    </div>
+    <div class="cardContainer" id="rideContainer">
+      <div v-for="ride in rides" class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"> <div v-if="user != ride.userName">{{ride.userName}}</div><div v-if="user == ride.userName"><i v-on:click="deleteRide(ride)" class="fas fa-trash-alt"></i></div></div>
+        <div class="card-body">
+          <table class="rideInfo">
+            <tr>
+              <td>Start:</td>
+              <td>{{ride.startLocation}}</td>
+            </tr>
+            <tr>
+              <td>Destination:</td>
+              <td>{{ride.destination}}</td>
+            </tr>
+            <tr>
+              <td>Time:</td>
+              <td>{{ride.departureTime}}</td>
+            </tr>
+            <tr>
+              <td>Seats:</td>
+              <td>{{ride.seats}}</td>
+            </tr>
+          </table>
+          <hr/>
+          <div style="padding-bottom: 5px">
+            <ul class="list-group list-group-flush">
+              <li v-for="rider in ride.riders" class="list-group-item">{{rider}}</li>
+            </ul>
+          </div>
+          <button v-if="user != ride.userName" v-on:click="addRider(ride, $event)" type="button" class="btn btn-secondary btn-lg btn-block btn-success"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+
+  <script src="/static/main.js"></script>
+</body>
+</html>
+
+<style>
+
+  .rideInfo {
+    width:100%;
+  }
+
+  .rideInfo td:first-child {
+    font-weight: bold;
+  }
+
+  .list-group {
+    height: 100px;
+    overflow: auto;
+  }
+
+  .list-group-item {
+    padding: 5px;
+  }
+
+
+ .cardContainer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .card {
+    min-width: 15em;
+    margin-right: 16px;
+  }
+
+  .navbar {
+    margin-bottom: 5px;
+  }
+
+  .fa-trash-alt {
+    cursor: pointer;
+  }
+
+</style>
